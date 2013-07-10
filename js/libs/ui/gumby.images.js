@@ -23,7 +23,11 @@
 		var scope = this;
 		$(this.supports).each(function(key, val) {
 			if(scope.checkSupport(val.test)) {
-				alert("STOP THE CAR");
+				scope.$el.after("You do support "+val.test+"!");
+				return false;
+			} else {
+				scope.$el.after("You don't support "+val.test+"!");
+				return true;	
 			}
 		});
 	};
