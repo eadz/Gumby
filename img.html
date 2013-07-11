@@ -42,13 +42,12 @@
 </head>
 
 <style>
-	.btn,.drawer { margin-bottom:10px; }
-	.drawer { text-align: center; }
-	h1.lead { border-bottom: 1px dotted #ccc; margin-bottom: 30px; }
-	h4.lead { margin-bottom:10px; }
-	#icon_map ul li { font-size: 16px; }
-	.smallify { font-size: 13px; }
-	.modal h2, .modal .btn { margin: 5% 0 20px; }
+	h2 {
+		margin: 20px 0;
+	}
+	img {
+		margin-bottom: 50px;
+	}
 </style>
 
 <body>
@@ -59,7 +58,12 @@
 
 	<div class="row">
 		<h2>Do you support webp?</h1>
-		<img gumby-supports="webp:img/img_silence_demo.webp" gumby-default="img/img_silence_demo.jpg" />
+		<img gumby-supports="webp|img/img_silence_demo.webp" gumby-default="img/img_silence_demo.jpg" />
+	</div>
+
+	<div class="row">
+		<h2>Are you a tablet?</h1>
+		<img gumby-media="only screen and (min-width: 768px)|img/img_silence_demo-768.jpg" gumby-default="img/img_silence_demo.jpg" />
 	</div>
 
 

@@ -61,7 +61,7 @@
 
 		// multiple can be supplied so loop round and create object 
 		$(supp).each(function(key, val) {
-			splt = val.split(':');
+			splt = val.split('|');
 			if(splt.length !== 2) {
 				return true;
 			}
