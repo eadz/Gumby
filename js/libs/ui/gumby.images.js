@@ -13,6 +13,7 @@
 
 		this.$el = $el;
 		this.supports = Gumby.selectAttr.apply(this.$el, ['supports']) || false;
+		this.def = Gumby.selectAttr.apply(this.$el, ['default']) || false;
 		this.media = Gumby.selectAttr.apply(this.$el, ['media']) || false;
 
 		if(this.supports) {
@@ -22,13 +23,20 @@
 	}
 
 	Images.prototype.handleSupports = function() {
-		var scope = this;
+		var scope = this,
+			supported = false;
+
 		$(this.supports).each(function(key, val) {
 			if(!!Modernizr[val.test]) {
 				scope.insertImage(val.img);
+				supported = true;
 				return false;
 			}
 		});
+
+		if(!supported && this.def) {
+			this.insertImage(this.def);
+		}
 	};
 
 	Images.prototype.insertImage = function(img) {
