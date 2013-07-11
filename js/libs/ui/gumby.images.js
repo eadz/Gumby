@@ -14,19 +14,30 @@
 		this.media = Gumby.selectAttr.apply(this.$el, ['media']) || false;
 		// default image to load
 		this.def = Gumby.selectAttr.apply(this.$el, ['default']) || false;
+		// feature supported or media query matched
+		this.success = false;
 
 		// if support attribute supplied and Modernizr is present
 		if(this.supports && Modernizr) {
 			// parse and handle that attribute
 			this.supports = this.parseAttr(this.supports);
-			this.handleSupports();
+			this.success = this.handleSupports();
 		}
 
 		if(this.media) {
 			this.media = this.parseAttr(this.media);
-			
+			this.success = this.handleMedia();
+		}
+
+		// no feature supported or media query matched so load default if supplied
+		if(!this.success && this.def) {
+			this.insertImage(this.def);
 		}
 	}
+
+	Images.prototype.handleMedia = function() {
+
+	};
 
 	// handle supports object checking each prop for support
 	Images.prototype.handleSupports = function() {
@@ -43,10 +54,7 @@
 			}
 		});
 
-		// no feature supported so load default if supplied
-		if(!supported && this.def) {
-			this.insertImage(this.def);
-		}
+		return supported;
 	};
 
 	// preload image and update image src
