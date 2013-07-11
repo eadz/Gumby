@@ -19,11 +19,11 @@
 
 		// if support attribute supplied and Modernizr is present
 		if(this.supports && Modernizr) {
-			// parse and handle that attribute
 			this.supports = this.parseAttr(this.supports);
 			this.success = this.handleSupports();
 		}
 
+		// if media attribute supplied and matchMedia is supported
 		if(this.media && window.matchMedia) {
 			this.media = this.parseAttr(this.media);
 			this.success = this.handleMedia();
@@ -35,6 +35,7 @@
 		}
 	}
 
+	// handle media object checking each prop for matching media query 
 	Images.prototype.handleMedia = function() {
 		var scope = this,
 			supported = false;
