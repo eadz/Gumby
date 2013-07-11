@@ -5,13 +5,15 @@
 
 	'use strict';
 
+	if(!Modernizr) {
+		return false;
+	}
+
 	function Images($el) {
 
 		this.$el = $el;
 		this.supports = Gumby.selectAttr.apply(this.$el, ['supports']) || false;
 		this.media = Gumby.selectAttr.apply(this.$el, ['media']) || false;
-
-		console.log($('html').attr('class'));
 
 		if(this.supports) {
 			this.supports = this.parseSupport(this.supports);
@@ -22,19 +24,20 @@
 	Images.prototype.handleSupports = function() {
 		var scope = this;
 		$(this.supports).each(function(key, val) {
-			if(scope.checkSupport(val.test)) {
-				scope.$el.after("You do support "+val.test+"!");
+			if(!!Modernizr[val.test]) {
+				scope.insertImage(val.img);
 				return false;
-			} else {
-				scope.$el.after("You don't support "+val.test+"!");
-				return true;	
 			}
 		});
 	};
 
-	Images.prototype.checkSupport = function(test) {
-		console.log(test, Modernizr[test]);
-		return !!Modernizr[test];
+	Images.prototype.insertImage = function(img) {
+		var scope = this,
+			image = $(new Image());
+
+		image.load(function() {
+			scope.$el.attr('src', img);
+		}).attr('src', img);
 	};
 
 	Images.prototype.parseSupport = function(support) {
@@ -49,7 +52,7 @@
 
 			res.push({
 				'test' : splt[0],
-				'file' : splt[1]
+				'img' : splt[1]
 			});
 		});
 
