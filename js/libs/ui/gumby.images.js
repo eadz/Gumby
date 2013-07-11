@@ -18,8 +18,13 @@
 		// if support attribute supplied and Modernizr is present
 		if(this.supports && Modernizr) {
 			// parse and handle that attribute
-			this.supports = this.parseSupport(this.supports);
-			this.handleSupports(this.supports);
+			this.supports = this.parseAttr(this.supports);
+			this.handleSupports();
+		}
+
+		if(this.media) {
+			this.media = this.parseAttr(this.media);
+			
 		}
 	}
 
@@ -54,8 +59,8 @@
 		}).attr('src', img);
 	};
 
-	// parse support attribute string
-	Images.prototype.parseSupport = function(support) {
+	// parse attribute strings, media/support
+	Images.prototype.parseAttr = function(support) {
 		var supp = support.split(','),
 			res = [], splt = [];
 
@@ -66,7 +71,7 @@
 				return true;
 			}
 
-			// object containing Modernizr test and image url
+			// object containing Modernizr test or media query and image url
 			res.push({
 				'test' : splt[0],
 				'img' : splt[1]
