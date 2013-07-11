@@ -24,7 +24,7 @@
 			this.success = this.handleSupports();
 		}
 
-		if(this.media) {
+		if(this.media && window.matchMedia) {
 			this.media = this.parseAttr(this.media);
 			this.success = this.handleMedia();
 		}
@@ -36,7 +36,20 @@
 	}
 
 	Images.prototype.handleMedia = function() {
+		var scope = this,
+			supported = false;
 
+		$(this.media).each(function(key, val) {
+			// media query matched
+			// supplied in order of preference so halt each loop
+			if(window.matchMedia(val.test).matches) {
+				scope.insertImage(val.img);
+				supported = true;
+				return false;
+			}
+		});
+
+		return supported;
 	};
 
 	// handle supports object checking each prop for support
@@ -47,7 +60,7 @@
 		$(this.supports).each(function(key, val) {
 			// modernizr test passes so load in image 
 			// supplied in order of preference so halt each loop
-			if(!!Modernizr[val.test]) {
+			if(Modernizr[val.test]) {
 				scope.insertImage(val.img);
 				supported = true;
 				return false;
