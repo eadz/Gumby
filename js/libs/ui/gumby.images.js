@@ -24,7 +24,8 @@
 		}
 
 		// if media attribute supplied and matchMedia is supported
-		if(this.media && window.matchMedia) {
+		// and success is still false, meaning no supporting feature was found
+		if(this.media && window.matchMedia && !this.success) {
 			this.media = this.parseAttr(this.media);
 			this.success = this.handleMedia();
 		}

@@ -64,9 +64,19 @@
 
 	<div class="row">
 		<h2>Are you a tablet?</h1>
-		<img gumby-media="only screen and (max-width: 768px)|img/img_silence_demo-768.jpg" 
+		<img gumby-media="only screen and (max-width: 768px) and (min-width: 501px)|img/img_silence_demo-768.jpg,
+						  only screen and (max-width: 500px)|img/img_silence_demo-500.jpg" 
 			 gumby-default="img/img_silence_demo.jpg" />
 	</div>
+
+	<div class="row">
+		<h2>Do you support webp and if not are you a tablet?</h1>
+		<img gumby-supports="webp|img/img_silence_demo.webp"
+			 gumby-media="only screen and (max-width: 768px)|img/img_silence_demo-768.jpg" 
+			 gumby-default="img/img_silence_demo.jpg" />
+	</div>
+
+
 
 
 	<!-- Grab Google CDN's jQuery, fall back to local if offline -->
