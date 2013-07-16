@@ -8,6 +8,9 @@
 	function Images($el) {
 
 		this.$el = $el;
+		// is this an <img> or background-image?
+		// set handler function accordingly
+		this.handler = this.$el.is('img') ? this.insertImage : this.insertBgImage;
 		// supports attribute in format test:image
 		this.supports = Gumby.selectAttr.apply(this.$el, ['supports']) || false;
 		// media attribute in format mediaQuery:image
@@ -32,8 +35,14 @@
 
 		// no feature supported or media query matched so load default if supplied
 		if(!this.success && this.def) {
-			this.insertImage(this.def);
+			this.success = this.def;
 		}
+
+		if(!this.success) {
+			return false;
+		}
+
+		this.handler(this.success);
 	}
 
 	// handle media object checking each prop for matching media query 
@@ -45,8 +54,7 @@
 			// media query matched
 			// supplied in order of preference so halt each loop
 			if(window.matchMedia(val.test).matches) {
-				scope.insertImage(val.img);
-				supported = true;
+				supported = val.img;
 				return false;
 			}
 		});
@@ -63,8 +71,7 @@
 			// modernizr test passes so load in image 
 			// supplied in order of preference so halt each loop
 			if(Modernizr[val.test]) {
-				scope.insertImage(val.img);
-				supported = true;
+				supported = val.img;
 				return false;
 			}
 		});
@@ -79,6 +86,17 @@
 
 		image.load(function() {
 			scope.$el.attr('src', img);
+		}).attr('src', img);
+	};
+
+	// preload image and update background-image
+	Images.prototype.insertBgImage = function(img) {
+		var scope = this,
+			image = $(new Image());
+
+		image.load(function() {
+			console.log(scope.$el.css('backgroundImage'));
+			scope.$el.css('background-image', 'url('+img+')');
 		}).attr('src', img);
 	};
 
@@ -106,7 +124,7 @@
 
 	// add initialisation
 	Gumby.addInitalisation('images', function() {
-		$('img[gumby-supports],img[data-supports],img[supports],img[gumby-media],img[data-media],img[media]').each(function() {
+		$('[gumby-supports],[data-supports],[supports],[gumby-media],[data-media],[media]').each(function() {
 			var $this = $(this);
 			// this element has already been initialized
 			if($this.data('isImage')) {
