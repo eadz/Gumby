@@ -9,9 +9,15 @@
 
 		this.$el = $el;
 
+		// set up module based on attributes
+		this.setup();
+		this.init();
+	}
+
+	// set up module based on attributes
+	Images.prototype.setup = function() {
 		// is this an <img> or background-image?
-		// set handler function accordingly
-		this.handler = this.$el.is('img') ? this.insertImage : this.insertBgImage;
+		this.type = this.$el.is('img') ? 'img' : 'bg';
 		// supports attribute in format test:image
 		this.supports = Gumby.selectAttr.apply(this.$el, ['supports']) || false;
 		// media attribute in format mediaQuery:image
@@ -23,25 +29,26 @@
 
 		// check functions
 		this.checks = {
-			supports : function() {
-				return Modernizr[val.test];
+			supports : function(val) {
+				return Modernizr[val];
 			},
-			media: function() {
-				return window.matchMedia(val.test).matches;
+			media: function(val) {
+				return window.matchMedia(val).matches;
 			}
 		};
+	};
 
+	// fire required checks and load resulting image
+	Images.prototype.init = function() {
 		// if support attribute supplied and Modernizr is present
 		if(this.supports && Modernizr) {
-			this.supports = this.parseAttr(this.supports);
-			this.success = this.handler('supports', this.supports);
+			this.success = this.handleTests('supports', this.parseAttr(this.supports));
 		}
 
 		// if media attribute supplied and matchMedia is supported
 		// and success is still false, meaning no supporting feature was found
 		if(this.media && window.matchMedia && !this.success) {
-			this.media = this.parseAttr(this.media);
-			this.success = this.handler('media', this.supports);
+			this.success = this.handleTests('media', this.parseAttr(this.media));
 		}
 
 		// no feature supported or media query matched so load default if supplied
@@ -49,22 +56,24 @@
 			this.success = this.def;
 		}
 
+		// no image to load
 		if(!this.success) {
 			return false;
 		}
 
-		this.handler(this.success);
-	}
+		// preload image and insert or set background-image property
+		this.insertImage(this.type, this.success);
+	};
 
 	// handle media object checking each prop for matching media query 
-	Images.prototype.handler = function(type, array) {
+	Images.prototype.handleTests = function(type, array) {
 		var scope = this,
 			supported = false;
 
 		$(array).each(function(key, val) {
 			// media query matched
 			// supplied in order of preference so halt each loop
-			if(scope.check(val.img)) {
+			if(scope.check(type, val.test)) {
 				supported = val.img;
 				return false;
 			}
@@ -73,28 +82,19 @@
 		return supported;
 	};
 
-	Images.prototype.check = function(type) {
-		return this.checks[type]();
+	// return the result of test function 
+	Images.prototype.check = function(type, val) {
+		return this.checks[type](val);
 	};
 
-	// preload image and update image src
-	Images.prototype.insertImage = function(img) {
+	// preload image and insert or set background-image property
+	Images.prototype.insertImage = function(type, img) {
 		var scope = this,
 			image = $(new Image());
 
 		image.load(function() {
-			scope.$el.attr('src', img);
-		}).attr('src', img);
-	};
-
-	// preload image and update background-image
-	Images.prototype.insertBgImage = function(img) {
-		var scope = this,
-			image = $(new Image());
-
-		image.load(function() {
-			console.log(scope.$el.css('backgroundImage'));
-			scope.$el.css('background-image', 'url('+img+')');
+			return type === 'img' ? scope.$el.attr('src', img) :
+									scope.$el.css('background-image', 'url('+img+')');
 		}).attr('src', img);
 	};
 
