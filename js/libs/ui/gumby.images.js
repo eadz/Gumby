@@ -8,6 +8,7 @@
 	function Images($el) {
 
 		this.$el = $el;
+
 		// is this an <img> or background-image?
 		// set handler function accordingly
 		this.handler = this.$el.is('img') ? this.insertImage : this.insertBgImage;
@@ -20,17 +21,27 @@
 		// feature supported or media query matched
 		this.success = false;
 
+		// check functions
+		this.checks = {
+			supports : function() {
+				return Modernizr[val.test];
+			},
+			media: function() {
+				return window.matchMedia(val.test).matches;
+			}
+		};
+
 		// if support attribute supplied and Modernizr is present
 		if(this.supports && Modernizr) {
 			this.supports = this.parseAttr(this.supports);
-			this.success = this.handleSupports();
+			this.success = this.handler('supports', this.supports);
 		}
 
 		// if media attribute supplied and matchMedia is supported
 		// and success is still false, meaning no supporting feature was found
 		if(this.media && window.matchMedia && !this.success) {
 			this.media = this.parseAttr(this.media);
-			this.success = this.handleMedia();
+			this.success = this.handler('media', this.supports);
 		}
 
 		// no feature supported or media query matched so load default if supplied
@@ -46,14 +57,14 @@
 	}
 
 	// handle media object checking each prop for matching media query 
-	Images.prototype.handleMedia = function() {
+	Images.prototype.handler = function(type, array) {
 		var scope = this,
 			supported = false;
 
-		$(this.media).each(function(key, val) {
+		$(array).each(function(key, val) {
 			// media query matched
 			// supplied in order of preference so halt each loop
-			if(window.matchMedia(val.test).matches) {
+			if(scope.check(val.img)) {
 				supported = val.img;
 				return false;
 			}
@@ -62,21 +73,8 @@
 		return supported;
 	};
 
-	// handle supports object checking each prop for support
-	Images.prototype.handleSupports = function() {
-		var scope = this,
-			supported = false;
-
-		$(this.supports).each(function(key, val) {
-			// modernizr test passes so load in image 
-			// supplied in order of preference so halt each loop
-			if(Modernizr[val.test]) {
-				supported = val.img;
-				return false;
-			}
-		});
-
-		return supported;
+	Images.prototype.check = function(type) {
+		return this.checks[type]();
 	};
 
 	// preload image and update image src
