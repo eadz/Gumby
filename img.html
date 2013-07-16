@@ -48,6 +48,9 @@
 	img {
 		margin-bottom: 50px;
 	}
+	#bg {
+		height: 200px;
+	}
 </style>
 
 <body>
@@ -74,6 +77,14 @@
 		<img gumby-supports="webp|img/img_silence_demo.webp"
 			 gumby-media="only screen and (max-width: 768px)|img/img_silence_demo-768.jpg" 
 			 gumby-default="img/img_silence_demo.jpg" />
+	</div>
+
+	<div class="row">
+		<h2>Webp/tablet for this background image?</h1>
+		<div id="bg" class="row" 
+			 gumby-supports="webp|img/img_silence_demo.webp"
+			 gumby-media="only screen and (max-width: 768px)|img/img_silence_demo-768.jpg" 
+			 gumby-default="img/img_silence_demo.jpg"></div>
 	</div>
 
 
