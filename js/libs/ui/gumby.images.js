@@ -93,8 +93,10 @@
 			image = $(new Image());
 
 		image.load(function() {
-			return type === 'img' ? scope.$el.attr('src', img) :
-									scope.$el.css('background-image', 'url('+img+')');
+			type === 'img' ? scope.$el.attr('src', img) : scope.$el.css('background-image', 'url('+img+')');
+
+			// trigger custom loaded event
+			scope.$el.trigger('gumby.onResized');
 		}).attr('src', img);
 	};
 
