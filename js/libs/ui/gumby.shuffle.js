@@ -11,6 +11,7 @@
 
 		this.children = $.makeArray(this.$el.children('.columns,.column'));
 		this.shuffles = this.parseAttrValue(Gumby.selectAttr.apply(this.$el, ['shuffle']));
+		this.shuffled = false;
 
 		var scope = this;
 
@@ -28,16 +29,26 @@
 				succes = true;
 			}
 		});
+
+		if(!succes) {
+			this.shuffle();
+		}
 	};
 
 	Shuffle.prototype.shuffle = function(sequence) {
+		console.log("SHUFFLING...");
 		var scope = this,
-			seq = sequence.split('-'),
+			seq = [],
 			newArr = [];
 
-		$(seq).each(function(index) {
-			newArr.push($(scope.children[seq[index]]));
-		});
+		if(sequence) {
+			seq = sequence.split('-');
+			$(seq).each(function(index) {
+				newArr.push($(scope.children[seq[index]]));
+			});
+		} else {
+			newArr = this.children;
+		}
 
 		this.$el.html('');
 
