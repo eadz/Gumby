@@ -9,10 +9,20 @@
 
 		this.$el = $el;
 
+		this.children = $.makeArray(this.$el.children('.columns,.column'));
 		this.shuffles = this.parseAttrValue(Gumby.selectAttr.apply(this.$el, ['shuffle']));
-	
-		console.log(this.shuffles);
+
+		var scope = this;
+
+		this.handleTests();
+		$(window).on('resize', function() {
+			scope.handleTests();
+		});
 	}
+
+	Shuffle.prototype.handleTests = function() {
+
+	};
 
 	Shuffle.prototype.parseAttrValue = function(str) {
 		var supp = str.split(','),
