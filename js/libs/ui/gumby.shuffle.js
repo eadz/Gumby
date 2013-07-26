@@ -21,7 +21,29 @@
 	}
 
 	Shuffle.prototype.handleTests = function() {
+		var scope = this, succes = false;
+		$(this.shuffles).each(function(key, val) {
+			if(window.matchMedia(val.test).matches) {
+				scope.shuffle(val.sequence);
+				succes = true;
+			}
+		});
+	};
 
+	Shuffle.prototype.shuffle = function(sequence) {
+		var scope = this,
+			seq = sequence.split('-'),
+			newArr = [];
+
+		$(seq).each(function(index) {
+			newArr.push($(scope.children[seq[index]]));
+		});
+
+		this.$el.html('');
+
+		$(newArr).each(function() {
+			scope.$el.append($(this));
+		});
 	};
 
 	Shuffle.prototype.parseAttrValue = function(str) {
